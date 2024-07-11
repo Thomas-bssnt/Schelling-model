@@ -1,16 +1,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from matplotlib.animation import FuncAnimation
 from .model import Schelling
 
 
 class Visualizer:
-    COLOR_TYPE_0 = (93, 147, 183)
-    COLOR_TYPE_1 = (14, 61, 144)
-    COLOR_EMPTY = (255, 255, 255)
 
     def __init__(self, schelling: Schelling) -> None:
         self.schelling = schelling
+
+        if self.schelling.number_types <= 4:
+            self.colors = {
+                None: mcolors.to_rgb("#FFFFFF"),
+                0: mcolors.to_rgb("#5d93b7"),
+                1: mcolors.to_rgb("#325e88"),
+                2: mcolors.to_rgb("#95aec2"),
+                3: mcolors.to_rgb("#092d5c"),
+            }
+        else:
+            self.colors = {None: mcolors.to_rgb("#FFFFFF")} | {
+                type_: mcolors.to_rgb(color)
+                for type_, color in enumerate(mcolors.TABLEAU_COLORS)
+            }
+
         self.fig, self.ax = plt.subplots(figsize=(6, 6))
         self.ax.axes.xaxis.set_ticks([])
         self.ax.axes.yaxis.set_ticks([])
@@ -18,17 +31,12 @@ class Visualizer:
         self.im = self.ax.imshow(self.generate_color_map())
 
     def generate_color_map(self) -> np.ndarray:
-        type_map = self.schelling.generate_type_map()
-
-        def get_color(type_):
-            if type_ == 0:
-                return self.COLOR_TYPE_0
-            elif type_ == 1:
-                return self.COLOR_TYPE_1
-            else:
-                return self.COLOR_EMPTY
-
-        return np.array([[get_color(type_) for type_ in row] for row in type_map])
+        return np.array(
+            [
+                [self.colors[type_] for type_ in row]
+                for row in self.schelling.generate_type_map()
+            ]
+        )
 
     def update(self, _, updates_per_frame) -> list:
         for _ in range(updates_per_frame):
@@ -40,7 +48,9 @@ class Visualizer:
         anim = FuncAnimation(
             self.fig,
             self.update,
-            interval=interval,
+            frames=None,
             fargs=(updates_per_frame,),
+            interval=interval,
+            cache_frame_data=False,
         )
         plt.show()

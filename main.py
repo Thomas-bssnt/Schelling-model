@@ -6,8 +6,15 @@ def main() -> None:
     city_size = (50, 50)
     population_density = 0.9
     happiness_threshold = 0.5
+    number_types = 3
 
-    schelling = Schelling(city_size, population_density, happiness_threshold)
+    schelling = Schelling(
+        city_size,
+        population_density,
+        happiness_threshold,
+        number_types,
+    )
+
     visualizer = Visualizer(schelling)
     visualizer.animate(updates_per_frame=100, interval=200)
 
