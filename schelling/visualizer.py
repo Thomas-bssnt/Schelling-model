@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation, PillowWriter
 from .model import Schelling
 
 
@@ -44,13 +44,20 @@ class Visualizer:
         self.im.set_data(self.generate_color_map())
         return [self.im]
 
-    def animate(self, updates_per_frame=100, interval=200) -> None:
-        anim = FuncAnimation(
+    def animate(self, updates_per_frame, frames=None, interval=200) -> FuncAnimation:
+        return FuncAnimation(
             self.fig,
             self.update,
-            frames=None,
+            frames=frames,
             fargs=(updates_per_frame,),
             interval=interval,
             cache_frame_data=False,
         )
+
+    def plot(self, updates_per_frame, interval=None) -> None:
+        anim = self.animate(updates_per_frame, interval=interval)
         plt.show()
+
+    def save(self, filename, frames=100, updates_per_frame=100, fps=10) -> None:
+        anim = self.animate(updates_per_frame, frames=frames)
+        anim.save(filename + ".gif", writer=PillowWriter(fps=fps))
