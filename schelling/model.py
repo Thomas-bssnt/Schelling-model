@@ -12,6 +12,18 @@ class Schelling:
         happiness_threshold: float,
         number_types: int,
     ) -> None:
+        if not (0 < population_density < 1):
+            raise ValueError(
+                f"Invalid population_density {population_density}."
+                "It must be between 0 and 1 (exclusive)."
+            )
+
+        if not (0 <= happiness_threshold <= 1):
+            raise ValueError(
+                f"Invalid happiness_threshold {happiness_threshold}."
+                "It must be between 0 and 1 (inclusive)."
+            )
+
         self.population_density = population_density
         self.happiness_threshold = happiness_threshold
         self.number_types = number_types

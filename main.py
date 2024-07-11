@@ -6,7 +6,7 @@ def main() -> None:
     city_size = (50, 50)
     population_density = 0.9
     happiness_threshold = 0.5
-    number_types = 3
+    number_types = 2
 
     schelling = Schelling(
         city_size,
